@@ -1,4 +1,5 @@
 import ReactPropTypesSecret from 'prop-types/lib/ReactPropTypesSecret'
+import React from 'react'
 
 export const compose = (...args) =>
   component =>
