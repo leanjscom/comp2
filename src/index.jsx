@@ -1,7 +1,7 @@
 import ReactPropTypesSecret from 'prop-types/lib/ReactPropTypesSecret'
 import React from 'react'
 
-export const compose = (...args) =>
+const compose = (...args) =>
   component =>
     (options = {}) => {
       if (options.eject) return [component, ...args]
@@ -68,3 +68,5 @@ export const createFakeComponent = exportProps =>
     }
     return <i />
   }
+
+export default compose
