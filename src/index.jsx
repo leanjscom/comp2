@@ -25,17 +25,15 @@ export const call = (func, ...args) => ({
   args
 })
 
-export const mockComposition = (composition) => {
-  const props = {}
-  const fakeComponent = createFakeComponent(props)
+export function composeWithFake(composition) {
   const [component, ...funcs] = composition({ eject: true })
-  const ComposedComponent = compose(...funcs)(fakeComponent)()
+  const FakeComponent = () => <i />
+  const ComposedComponent = compose(...funcs)(FakeComponent)()
 
-  function getPropTypeErrors () {
-    const typeSpecs = component.propTypes
+  function getPropTypeErrors ({ props }) {
     let propTypeErrors = ''
-    for (var typeSpecName in typeSpecs) {
-      const error = typeSpecs[typeSpecName](
+    for (var typeSpecName in component.propTypes) {
+      const error = component.propTypes[typeSpecName](
         props,
         typeSpecName,
         component.name,
@@ -44,29 +42,14 @@ export const mockComposition = (composition) => {
         ReactPropTypesSecret
       )
       if (error) {
-        propTypeErrors = `${propTypeErrors}
-${error.message}
-`
+        propTypeErrors = [...propTypeErrors, error]
       }
     }
 
     return propTypeErrors
   }
 
-  return {
-    props,
-    ComposedComponent,
-    getPropTypeErrors
-  }
+  return { ComposedComponent, FakeComponent, getPropTypeErrors }
 }
-
-export const createFakeComponent = exportProps =>
-  (props) => {
-    const keys = Object.keys(props)
-    for (const value of keys) {
-      exportProps[value] = props[value]
-    }
-    return <i />
-  }
 
 export default compose
